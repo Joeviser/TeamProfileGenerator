@@ -2,7 +2,6 @@
 // This class should inherit from Employee.
 const Employee = require("./Employee.js");
 
-
 class Manager extends Employee {
     constructor(name,id,email,officeNumber){
     super(name,id,email);
@@ -14,7 +13,7 @@ class Manager extends Employee {
     getOfficeNumber() {
         return this.officeNumber;
     }
-   
+    
  };
 
  module.exports = Manager;

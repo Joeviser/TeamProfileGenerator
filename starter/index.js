@@ -13,7 +13,14 @@ const render = require("./src/page-template.js");
 
 // Write Code to gather information about the development team members, and render the HTML file.
 
+
+//Check if the output folder exists and create it if it does not.
+  if (!fs.existsSync(OUTPUT_DIR)) {
+    fs.mkdirSync(OUTPUT_DIR);
+  }
+
 const team = [];
+
 // Manager Information prompt
 
 function managerProfile(){
@@ -40,7 +47,9 @@ function managerProfile(){
       }
     ])
   }
-  
+
+  // Others Employees' Information prompt (Engineer, Intern)
+
   function teamProfile(){
     inquirer.prompt([
       {
@@ -74,7 +83,7 @@ function managerProfile(){
           }
         ]).then((data)=>{
           let engineer = new Engineer(data.name, data.id, data.email,data.github);
-          team.splice(team.length-1 , 0, engineer.getHTML());
+          team.splice(team.length-1 , 0, engineer);
           teamProfile();
         })
       }
@@ -103,37 +112,34 @@ function managerProfile(){
              }
         ]).then((data)=>{
           let intern = new Intern(data.name, data.id, data.email,data.school);
-          team.splice(team.length-1, 0, intern.getHTML());
+          team.splice(team.length-1, 0,intern);
           teamProfile();
         })
       }
     }
-    return printHTML(team);
+    return printHTML();
 });
 }
 
 
 
-// Print and open HTML
+// Print HTML final and Save it in the output path.
 
-function printHTML(team){
-    fs.writeFile("team.html", team.toString(), (err) => {
+function printHTML(){
+    const htmlFinal = render(team);
+    fs.writeFile(outputPath, htmlFinal, (err) => {
       if(err) {
         throw err;
       };
-      console.log("Team Created");
+      console.log("Team Created Successfully");
     });
-    setTimeout(() => {
-    open("Team.html");
-     console.log("Your file has been made!");
-    }, "1500")
-    };
+};
 
-// Order of operation when running node index
+// Running node index
 
 managerProfile()
 .then((data)=>{
   const manager = new Manager(data.name, data.id, data.email, data.officeNumber);
-  team.splice(team.length-1, 0, manager.getHTML());
+  team.splice(team.length-1, 0, manager);
   teamProfile();
 });
